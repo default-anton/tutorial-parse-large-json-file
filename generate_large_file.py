@@ -5,8 +5,7 @@ import random
 import string
 
 
-def generate_large_file(file_name, number_of_movies):
-
+def generate_large_file(file_name: str, number_of_movies: int) -> None:
     movies = []
     for _ in range(number_of_movies):
         movie = {
