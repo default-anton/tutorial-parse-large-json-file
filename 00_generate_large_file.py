@@ -3,6 +3,7 @@
 import orjson
 import random
 import string
+from pathlib import Path
 
 
 def generate_large_file(file_name: str, number_of_movies: int) -> None:
@@ -18,7 +19,9 @@ def generate_large_file(file_name: str, number_of_movies: int) -> None:
         }
         movies.append(movie)
 
-    with open(file_name, "wb") as f:
+    file = Path(file_name)
+    file.parent.mkdir(parents=True, exist_ok=True)
+    with file.open("wb") as f:
         f.write(orjson.dumps(movies))
 
 
