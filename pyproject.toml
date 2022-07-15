@@ -7,6 +7,7 @@ authors = [
 ]
 dependencies = [
     "orjson>=3.7.7",
+    "filprofiler>=2022.6.0",
 ]
 requires-python = ">=3.10"
 license = {text = "Apache License 2.0"}
