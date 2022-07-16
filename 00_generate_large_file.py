@@ -1,9 +1,14 @@
 #!/usr/bin/env python
 
-import orjson
+import argparse
 import random
 import string
 from pathlib import Path
+from typing import Final
+
+import orjson
+
+BYTES_PER_MOVIE: Final[int] = 70
 
 
 def generate_large_file(file_name: str, number_of_movies: int) -> None:
@@ -27,8 +32,18 @@ def generate_large_file(file_name: str, number_of_movies: int) -> None:
 
 def main():
     # expose number of movies to generate in the command line
-    number_of_movies = int(input("Enter number of movies: "))
-    generate_large_file("data/movies.json", number_of_movies)
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--file-size-in-mib", type=int, required=True, help="Desired file size in MiB"
+    )
+    args = parser.parse_args()
+
+    file_size_in_bytes = args.file_size_in_mib << 20
+
+    generate_large_file(
+        file_name="data/movies.json",
+        number_of_movies=file_size_in_bytes // BYTES_PER_MOVIE,
+    )
 
 
 if __name__ == "__main__":
