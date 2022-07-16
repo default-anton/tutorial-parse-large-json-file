@@ -57,12 +57,13 @@ def main() -> None:
 
 def parse_movies_in_batches(batch_size: int, start_pos: int, end_pos: int) -> int:
     movie_count: int = 0
+    batch = bytearray()
 
     with open("data/movies.json", "rb") as f:
         f.seek(start_pos, io.SEEK_SET)
 
         bytes_left = end_pos - f.tell()
-        batch = bytearray(f.read(min(batch_size, bytes_left)))
+        batch[:] = f.read(min(batch_size, bytes_left))
         open_bracket = batch.find(b"{")
         close_bracket = batch.rfind(b"}")
 
@@ -71,10 +72,9 @@ def parse_movies_in_batches(batch_size: int, start_pos: int, end_pos: int) -> in
             movies = orjson.loads(b"[" + batch[open_bracket : close_bracket + 1] + b"]")
             movie_count += len(movies)
 
-            carry_over = batch[close_bracket + 1 :]
-            batch = bytearray(carry_over)
             bytes_left = end_pos - f.tell()
-            batch.extend(f.read(min(batch_size, bytes_left)))
+            carry_over = batch[close_bracket + 1 :]
+            batch[:] = carry_over + f.read(min(batch_size, bytes_left))
             open_bracket = batch.find(b"{")
             close_bracket = batch.rfind(b"}")
 

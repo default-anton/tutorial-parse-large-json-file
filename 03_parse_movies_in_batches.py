@@ -25,10 +25,10 @@ def main() -> None:
 
 def parse_movies_in_batches(batch_size: int) -> None:
     movie_count: int = 0
+    batch = bytearray()
 
     with open("data/movies.json", "rb") as f:
-        batch = bytearray()
-        batch.extend(f.read(batch_size))
+        batch[:] = f.read(batch_size)
         start_pos = batch.find(b"{")
         end_pos = batch.rfind(b"}")
 
@@ -38,8 +38,7 @@ def parse_movies_in_batches(batch_size: int) -> None:
             movie_count += len(movies)
 
             carry_over = batch[end_pos + 1 :]
-            batch = bytearray(carry_over)
-            batch.extend(f.read(batch_size))
+            batch[:] = carry_over + f.read(batch_size)
             start_pos = batch.find(b"{")
             end_pos = batch.rfind(b"}")
 
